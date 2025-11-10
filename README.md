@@ -11,6 +11,12 @@ This workbook provides real-time visibility into your Azure Arc-enabled infrastr
 - Identify potential licensing gaps
 - Generate compliance reports for hybrid infrastructure
 
+## Screenshots
+
+![Azure Arc Software Assurance Dashboard](screenshots/example.png)
+
+*The dashboard provides a comprehensive view of your Arc-enabled infrastructure with licensing compliance metrics and detailed server inventory.*
+
 ## Features
 
 ### 📊 Key Metrics Dashboard
@@ -39,7 +45,7 @@ This workbook provides real-time visibility into your Azure Arc-enabled infrastr
 
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/yourusername/azure-arc-sa-dashboard.git
+   git clone https://github.com/claestom/azure-arc-sa-workbook.git
    ```
 
 2. **Import the workbook:**
@@ -106,7 +112,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 For issues and questions:
-- Create an [issue](https://github.com/yourusername/azure-arc-sa-dashboard/issues) in this repository
+- Create an [issue](https://github.com/claestom/azure-arc-sa-workbook/issues) in this repository
 - Review [Azure Arc documentation](https://docs.microsoft.com/azure/azure-arc/)
 - Check [Azure Monitor Workbooks documentation](https://docs.microsoft.com/azure/azure-monitor/platform/workbooks-overview)
 
