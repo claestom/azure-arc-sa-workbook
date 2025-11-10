@@ -76,26 +76,18 @@ This workbook provides real-time visibility into your Azure Arc-enabled infrastr
 | ⚠ No | Orange | No Software Assurance/License-only model |
 | Unknown | Gray | Status cannot be determined |
 
-## Workbook Structure
+## Azure Resource Graph Queries
 
-```
-workbooks/
-└── arc-sa-overview.json    # Main workbook template
-```
+For users who prefer to run individual queries directly in Azure Resource Graph, this repository also includes standalone KQL queries in the `arg/` folder:
 
-The workbook includes:
-- **Parameters section**: Subscription and server type filters
-- **Tile visualizations**: Quick compliance metrics
-- **Table visualization**: Detailed server inventory with licensing status
-- **Documentation**: Usage instructions and compliance guidance
+- **`arcSAsummary.kql`** - Summary metrics for Software Assurance compliance
+- **`arcSAdetailed.kql`** - Detailed server inventory with licensing information
 
-## Customization
-
-You can modify the workbook to:
-- Add additional server properties
-- Include custom licensing fields
-- Extend filtering capabilities
-- Add compliance thresholds and alerts
+These queries can be executed directly in:
+- [Azure Resource Graph Explorer](https://portal.azure.com/#view/HubsExtension/ArgQueryBlade) in the Azure portal
+- Azure CLI using `az graph query`
+- Azure PowerShell using `Search-AzGraph`
+- REST API calls to Azure Resource Graph
 
 ## Contributing
 
@@ -109,17 +101,8 @@ You can modify the workbook to:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
-
-For issues and questions:
-- Create an [issue](https://github.com/claestom/azure-arc-sa-workbook/issues) in this repository
-- Review [Azure Arc documentation](https://docs.microsoft.com/azure/azure-arc/)
-- Check [Azure Monitor Workbooks documentation](https://docs.microsoft.com/azure/azure-monitor/platform/workbooks-overview)
-
 ## Disclaimer
 
 This workbook is provided as-is for monitoring purposes. Always consult with your licensing team and review Microsoft licensing terms for official compliance requirements.
 
 ---
-
-**Built with ❤️ for the Azure Arc community**
