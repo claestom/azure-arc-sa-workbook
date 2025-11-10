@@ -13,7 +13,8 @@ This workbook provides real-time visibility into your Azure Arc-enabled infrastr
 
 ## Screenshots
 
-![Azure Arc Software Assurance Dashboard](screenshots/example.png)
+![Azure Arc Software Assurance Dashboard](screenshots/example1.png)
+![Azure Arc Software Assurance Dashboard](screenshots/example2.png)
 
 *The dashboard provides a comprehensive view of your Arc-enabled infrastructure with licensing compliance metrics and detailed server inventory.*
 
