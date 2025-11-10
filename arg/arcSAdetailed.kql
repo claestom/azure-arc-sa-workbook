@@ -1,0 +1,21 @@
+// Arc-enabled Windows Servers
+resources
+| where type == "microsoft.hybridcompute/machines"
+| where properties.osName contains "Windows"
+| extend ServerName = name
+| extend Version = tostring(properties.osSku)
+| extend SoftwareAssuranceEnabled = iff(properties["licenseProfile"]["softwareAssurance"]["softwareAssuranceCustomer"] == true, "Yes", "No")
+| extend ServerType = "Windows Server"
+| project ServerName, Version, SoftwareAssuranceEnabled, ServerType
+| union (
+    // Arc-enabled SQL Servers
+    resources
+    | where type == "microsoft.azurearcdata/sqlserverinstances"
+    | extend ServerName = name
+    | extend Version = tostring(properties.version)
+    | extend SoftwareAssuranceEnabled = iff(properties['licenseType'] == "Paid", "Yes", "No")
+    | extend ServerType = "SQL Server"
+    | project ServerName, Version, SoftwareAssuranceEnabled, ServerType
+)
+| project ServerName, Version, SoftwareAssuranceEnabled, ServerType
+| order by ServerType asc, ServerName asc

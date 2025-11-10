@@ -1,0 +1,34 @@
+// Arc-enabled Servers with Software Assurance = true
+resources
+| where type == "microsoft.hybridcompute/machines"
+| where properties["licenseProfile"]["softwareAssurance"]["softwareAssuranceCustomer"] == true
+| summarize Count = count()
+| extend TileType = "Arc Servers - Software Assurance Enabled"
+| union (
+    // Arc-enabled Servers with Software Assurance = false (using formula: Total - Enabled)
+    resources
+    | where type == "microsoft.hybridcompute/machines"
+    | summarize 
+        TotalServers = count(),
+        SoftwareAssuranceEnabled = countif(properties["licenseProfile"]["softwareAssurance"]["softwareAssuranceCustomer"] == true)
+    | project Count = TotalServers - SoftwareAssuranceEnabled
+    | extend TileType = "Arc Servers - Software Assurance Disabled"
+)
+| union (
+    // Arc-enabled SQL Servers with Paid license
+    resources
+    | where type == "microsoft.azurearcdata/sqlserverinstances"
+    | where properties['licenseType'] == "Paid"
+    | summarize Count = count()
+    | extend TileType = "Arc SQL Servers - Software Assurance Enabled"
+)
+| union (
+    // Arc-enabled SQL Servers with LicenseOnly
+    resources
+    | where type == "microsoft.azurearcdata/sqlserverinstances"
+    | where properties['licenseType'] == "LicenseOnly"
+    | summarize Count = count()
+    | extend TileType = "Arc SQL Servers - Software Assurance Disabled"
+)
+| project Count, TileType
+| order by TileType asc
