@@ -7,7 +7,6 @@ A comprehensive Azure Workbook for monitoring Software Assurance compliance acro
 This workbook provides real-time visibility into your Azure Arc-enabled infrastructure licensing status, helping you:
 
 - Track Software Assurance compliance across Windows Servers
-- Monitor SQL Server licensing types (Paid vs License-Only/BYOL)
 - Identify potential licensing gaps
 - Generate compliance reports for hybrid infrastructure
 
@@ -21,20 +20,17 @@ This workbook provides real-time visibility into your Azure Arc-enabled infrastr
 ## Features
 
 ### 📊 Key Metrics Dashboard
-- **Software Assurance Enabled/Disabled** servers count
-- **Paid License** SQL Server instances
-- **License-Only (BYOL)** SQL Server instances
+- **Software Assurance Enabled/Disabled** Windows & SQL servers count
+- **Coverage Percentages** - Real-time SA compliance rates for Windows and SQL Server
 
 ### 📋 Detailed Server Inventory
 - Complete list of Arc-enabled servers and SQL instances
-- License status indicators with visual formatting
-- Filterable by server type (Windows Server, SQL Server)
+- Multi-level filtering:
+  - **Subscription** selection (single or multiple)
+  - **Resource Group** filtering with resource counts
+  - **Server Type** filtering (Windows Server, SQL Server)
+  - **Version-specific** filtering (Windows Server versions, SQL Server versions)
 - Sortable by various attributes
-
-### 🎯 Compliance Tracking
-- Visual indicators for compliance status
-- Resource group and subscription organization
-- Location-based server distribution
 
 ## Prerequisites
 
@@ -58,24 +54,9 @@ This workbook provides real-time visibility into your Azure Arc-enabled infrastr
 
 3. **Configure parameters:**
    - Select your subscription(s) from the dropdown
-   - Choose server type filters as needed
-
-## Usage
-
-### Quick Start
-1. Open the workbook in Azure Monitor
-2. Select your subscriptions from the parameter dropdown
-3. Use the server type filter to focus on specific infrastructure
-4. Review the tile summaries for quick compliance overview
-5. Examine the detailed server inventory table for specific licensing status
-
-### Interpreting Results
-
-| Status | Icon | Meaning |
-|--------|------|---------|
-| ✓ Yes | Green | Software Assurance/Paid licensing active |
-| ⚠ No | Orange | No Software Assurance/License-only model |
-| Unknown | Gray | Status cannot be determined |
+   - Choose specific resource group(s) or select "All"
+   - Use server type filters to focus on Windows or SQL Server instances
+   - Apply version-specific filters for granular analysis
 
 ## Azure Resource Graph Queries
 
