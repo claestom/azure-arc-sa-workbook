@@ -98,7 +98,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "resources\r\n| where type == \"microsoft.hybridcompute/machines\"\r\n| where properties[\"licenseProfile\"][\"softwareAssurance\"][\"softwareAssuranceCustomer\"] == false\r\n| summarize Count = count()",
+        "query": "resources\r\n| where type == \"microsoft.hybridcompute/machines\"\r\n| summarize \r\n    TotalServers = count(),\r\n    SoftwareAssuranceEnabled = countif(properties[\"licenseProfile\"][\"softwareAssurance\"][\"softwareAssuranceCustomer\"] == true)\r\n| project Count = TotalServers - SoftwareAssuranceEnabled",
         "size": 4,
         "title": "Arc Servers - Software Assurance Disabled",
         "color": "orange",
