@@ -1,0 +1,283 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# Arc-enabled Server & SQL Server License Dashboard\r\n## Overview of Software Assurance and License compliance across your hybrid infrastructure"
+      },
+      "name": "title"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "subscription",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscriptions",
+            "type": 6,
+            "isRequired": true,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "includeAll": true,
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "defaultValue": "value::all",
+            "value": [
+              "value::all"
+            ]
+          },
+          {
+            "id": "serverTypeFilter",
+            "version": "KqlParameterItem/1.0",
+            "name": "ServerTypeFilter",
+            "label": "Server Type Filter",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "jsonData": "[\r\n    { \"value\": \"Windows Server\", \"label\": \"Windows Servers\" },\r\n    { \"value\": \"SQL Server\", \"label\": \"SQL Servers\" }\r\n]",
+            "value": [
+              "Windows Server",
+              "SQL Server"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [
+                "value::all"
+              ],
+              "selectAllValue": "*",
+              "showDefault": false
+            }
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.resourcegraph/resources"
+      },
+      "name": "parameters"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type == \"microsoft.hybridcompute/machines\"\r\n| where properties[\"licenseProfile\"][\"softwareAssurance\"][\"softwareAssuranceCustomer\"] == true\r\n| summarize Count = count()",
+        "size": 4,
+        "title": "Arc Servers - Software Assurance Enabled",
+        "color": "green",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "tiles",
+        "tileSettings": {
+          "titleContent": {
+            "columnMatch": "Count",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            }
+          },
+          "showBorder": false
+        }
+      },
+      "customWidth": "25",
+      "name": "tile1"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type == \"microsoft.hybridcompute/machines\"\r\n| where properties[\"licenseProfile\"][\"softwareAssurance\"][\"softwareAssuranceCustomer\"] == false\r\n| summarize Count = count()",
+        "size": 4,
+        "title": "Arc Servers - Software Assurance Disabled",
+        "color": "orange",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "tiles",
+        "tileSettings": {
+          "titleContent": {
+            "columnMatch": "Count",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            }
+          },
+          "showBorder": false
+        }
+      },
+      "customWidth": "25",
+      "name": "tile2"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type == \"microsoft.azurearcdata/sqlserverinstances\"\r\n| where properties['licenseType'] == \"Paid\"\r\n| summarize Count = count()",
+        "size": 4,
+        "title": "Arc SQL Servers - Software Assurance Enabled",
+        "color": "blue",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "tiles",
+        "tileSettings": {
+          "titleContent": {
+            "columnMatch": "Count",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            }
+          },
+          "showBorder": false
+        }
+      },
+      "customWidth": "25",
+      "name": "tile3"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type == \"microsoft.azurearcdata/sqlserverinstances\"\r\n| where properties['licenseType'] == \"LicenseOnly\"\r\n| summarize Count = count()",
+        "size": 4,
+        "title": "Arc SQL Servers - Software Assurance Disabled",
+        "color": "purple",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "tiles",
+        "tileSettings": {
+          "titleContent": {
+            "columnMatch": "Count",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            }
+          },
+          "showBorder": false
+        }
+      },
+      "customWidth": "25",
+      "name": "tile4"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "---\r\n\r\n## Server Details\r\nDetailed view of all Arc-enabled servers and SQL instances with their licensing information."
+      },
+      "name": "separator"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "resources\r\n| where type in (\"microsoft.hybridcompute/machines\", \"microsoft.azurearcdata/sqlserverinstances\")\r\n| extend ServerName = name\r\n| extend ServerType = case(\r\n    type == \"microsoft.hybridcompute/machines\" and properties.osName contains \"Windows\", \"Windows Server\",\r\n    type == \"microsoft.azurearcdata/sqlserverinstances\", \"SQL Server\",\r\n    \"Other\"\r\n)\r\n| where ServerType != \"Other\"\r\n| extend Version = case(\r\n    ServerType == \"Windows Server\", tostring(properties.osSku),\r\n    ServerType == \"SQL Server\", tostring(properties.version),\r\n    \"\"\r\n)\r\n| extend SoftwareAssuranceEnabled = case(\r\n    ServerType == \"Windows Server\", iff(properties[\"licenseProfile\"][\"softwareAssurance\"][\"softwareAssuranceCustomer\"] == true, \"Yes\", \"No\"),\r\n    ServerType == \"SQL Server\", iff(properties['licenseType'] == \"Paid\", \"Yes\", \"No\"),\r\n    \"Unknown\"\r\n)\r\n| project ServerName, Version, SoftwareAssuranceEnabled, ServerType, ResourceGroup = resourceGroup, Location = location, SubscriptionId = subscriptionId\r\n| order by ServerType asc, ServerName asc",
+        "size": 0,
+        "title": "Server Inventory with License Information",
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscriptions}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "SoftwareAssuranceEnabled",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Yes",
+                    "representation": "success",
+                    "text": "✓ Yes"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "No",
+                    "representation": "warning",
+                    "text": "⚠ No"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "Unknown"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "ServerType",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "colors",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Windows Server",
+                    "representation": "blue",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "SQL Server",
+                    "representation": "purple",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "lightBlue",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            }
+          ],
+          "filter": true
+        },
+        "sortBy": []
+      },
+      "name": "serverDetails"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "### Summary Statistics\r\n\r\nThis dashboard provides an overview of your Arc-enabled infrastructure licensing compliance:\r\n\r\n- **Software Assurance Enabled**: Servers with active Software Assurance\r\n- **Software Assurance Disabled**: Servers without Software Assurance\r\n\r\n> **Note**: Use the built-in table filter to focus on specific server types in the detailed view."
+      },
+      "name": "footer"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "---\r\n\r\n## 📚 Documentation Links\r\n\r\n### Enable Software Assurance\r\n\r\nFor servers showing as **Software Assurance Disabled**, use these guides to enable Software Assurance:\r\n\r\n**SQL Server:**\r\n[Modify SQL Server Configuration - Enable Software Assurance](https://learn.microsoft.com/en-us/sql/sql-server/azure-arc/manage-configuration?view=sql-server-ver17&tabs=azure#modify-sql-server-configuration)\r\n\r\n**Windows Server:**\r\n[Windows Server Management Overview - Enrollment](https://learn.microsoft.com/en-us/azure/azure-arc/servers/windows-server-management-overview?tabs=portal#enrollment)\r\n\r\n> 💡 **Tip**: After enabling Software Assurance, it may take up to 24 hours for the changes to reflect in this dashboard."
+      },
+      "name": "documentation"
+    }
+  ],
+  "fallbackResourceIds": [
+    "azure monitor"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
