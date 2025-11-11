@@ -288,82 +288,6 @@
               "selectAllValue": "*",
               "showDefault": false
             }
-          },
-          {
-            "id": "windowsVersionFilter",
-            "version": "KqlParameterItem/1.0",
-            "name": "WindowsVersionFilter",
-            "label": "🪟 Windows Server Version",
-            "type": 2,
-            "multiSelect": true,
-            "quote": "'",
-            "delimiter": ",",
-            "query": "resources\r\n| where type == \"microsoft.hybridcompute/machines\" and properties.osName contains \"Windows\"\r\n| where resourceGroup in ({ResourceGroups}) or '*' in ({ResourceGroups})\r\n| extend Version = tostring(properties.osSku)\r\n| where isnotempty(Version)\r\n| summarize Count = count() by Version\r\n| order by Version asc\r\n| project value = Version, label = strcat(Version, \" (\", Count, \" servers)\"), group = \"Windows Versions\"",
-            "typeSettings": {
-              "additionalResourceOptions": [
-                "value::all"
-              ],
-              "selectAllValue": "*",
-              "showDefault": false
-            },
-            "dependsOn": "serverTypeFilter",
-            "criteriaData": [
-              {
-                "criteriaContext": {
-                  "operator": "contains",
-                  "value": "Windows Server",
-                  "resultValType": "static",
-                  "resultVal": "true"
-                }
-              }
-            ],
-            "timeContext": {
-              "durationMs": 86400000
-            },
-            "defaultValue": "value::all",
-            "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources",
-            "crossComponentResources": [
-              "{Subscriptions}"
-            ]
-          },
-          {
-            "id": "sqlVersionFilter",
-            "version": "KqlParameterItem/1.0",
-            "name": "SqlVersionFilter",
-            "label": "🗃️ SQL Server Version",
-            "type": 2,
-            "multiSelect": true,
-            "quote": "'",
-            "delimiter": ",",
-            "query": "resources\r\n| where type == \"microsoft.azurearcdata/sqlserverinstances\"\r\n| where resourceGroup in ({ResourceGroups}) or '*' in ({ResourceGroups})\r\n| extend Version = tostring(properties.version)\r\n| where isnotempty(Version)\r\n| summarize Count = count() by Version\r\n| order by Version asc\r\n| project value = Version, label = strcat(Version, \" (\", Count, \" instances)\"), group = \"SQL Versions\"",
-            "typeSettings": {
-              "additionalResourceOptions": [
-                "value::all"
-              ],
-              "selectAllValue": "*",
-              "showDefault": false
-            },
-            "dependsOn": "serverTypeFilter",
-            "criteriaData": [
-              {
-                "criteriaContext": {
-                  "operator": "contains",
-                  "value": "SQL Server",
-                  "resultValType": "static",
-                  "resultVal": "true"
-                }
-              }
-            ],
-            "timeContext": {
-              "durationMs": 86400000
-            },
-            "defaultValue": "value::all",
-            "queryType": 1,
-            "resourceType": "microsoft.resourcegraph/resources",
-            "crossComponentResources": [
-              "{Subscriptions}"
-            ]
           }
         ],
         "style": "pills",
@@ -376,7 +300,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "resources\r\n| where type in (\"microsoft.hybridcompute/machines\", \"microsoft.azurearcdata/sqlserverinstances\")\r\n| where resourceGroup in ({ResourceGroups}) or '*' in ({ResourceGroups})\r\n| extend ServerName = name\r\n| extend ServerType = case(\r\n    type == \"microsoft.hybridcompute/machines\" and properties.osName contains \"Windows\", \"Windows Server\",\r\n    type == \"microsoft.azurearcdata/sqlserverinstances\", \"SQL Server\",\r\n    \"Other\"\r\n)\r\n| where ServerType != \"Other\"\r\n| extend Version = case(\r\n    ServerType == \"Windows Server\", tostring(properties.osSku),\r\n    ServerType == \"SQL Server\", tostring(properties.version),\r\n    \"\"\r\n)\r\n| extend SoftwareAssuranceEnabled = case(\r\n    ServerType == \"Windows Server\", iff(properties[\"licenseProfile\"][\"softwareAssurance\"][\"softwareAssuranceCustomer\"] == true, \"Yes\", \"No\"),\r\n    ServerType == \"SQL Server\", iff(properties['licenseType'] == \"Paid\", \"Yes\", \"No\"),\r\n    \"Unknown\"\r\n)\r\n| where ServerType in ({ServerTypeFilter}) or '*' in ({ServerTypeFilter})\r\n| where ServerType != \"Windows Server\" or Version in ({WindowsVersionFilter}) or '*' in ({WindowsVersionFilter})\r\n| where ServerType != \"SQL Server\" or Version in ({SqlVersionFilter}) or '*' in ({SqlVersionFilter})\r\n| project ServerName, Version, SoftwareAssuranceEnabled, ServerType, ResourceGroup = resourceGroup, Location = location, SubscriptionId = subscriptionId\r\n| order by ServerType asc, ServerName asc",
+        "query": "resources\r\n| where type in (\"microsoft.hybridcompute/machines\", \"microsoft.azurearcdata/sqlserverinstances\")\r\n| where resourceGroup in ({ResourceGroups}) or '*' in ({ResourceGroups})\r\n| extend ServerName = name\r\n| extend ServerType = case(\r\n    type == \"microsoft.hybridcompute/machines\" and properties.osName contains \"Windows\", \"Windows Server\",\r\n    type == \"microsoft.azurearcdata/sqlserverinstances\", \"SQL Server\",\r\n    \"Other\"\r\n)\r\n| where ServerType != \"Other\"\r\n| where ServerType in ({ServerTypeFilter}) or '*' in ({ServerTypeFilter})\r\n| extend Version = case(\r\n    ServerType == \"Windows Server\", tostring(properties.osSku),\r\n    ServerType == \"SQL Server\", tostring(properties.version),\r\n    \"\"\r\n)\r\n| extend Kind = case(\r\n    ServerType == \"Windows Server\", case(\r\n        toupper(tostring(kind)) == \"HCI\", \"Azure Local (HCI)\",\r\n        toupper(tostring(kind)) == \"SCVMM\", \"SCVMM\",\r\n        toupper(tostring(kind)) == \"VMWARE\", \"VMware vSphere\",\r\n        toupper(tostring(kind)) == \"AVS\", \"Azure VMware Solution\",\r\n        toupper(tostring(kind)) == \"AWS\", \"AWS\",\r\n        toupper(tostring(kind)) == \"GCP\", \"GCP\",\r\n        isnotempty(kind), tostring(kind),\r\n        \"Physical/Other\"\r\n    ),\r\n    ServerType == \"SQL Server\", \"SQL Instance\",\r\n    \"Unknown\"\r\n)\r\n| extend SoftwareAssuranceEnabled = case(\r\n    ServerType == \"Windows Server\", iff(properties[\"licenseProfile\"][\"softwareAssurance\"][\"softwareAssuranceCustomer\"] == true, \"Yes\", \"No\"),\r\n    ServerType == \"SQL Server\", iff(properties['licenseType'] == \"Paid\", \"Yes\", \"No\"),\r\n    \"Unknown\"\r\n)\r\n| project ServerName, Kind, Version, SoftwareAssuranceEnabled, ServerType, ResourceGroup = resourceGroup, Location = location, SubscriptionId = subscriptionId\r\n| order by ServerType asc, ServerName asc",
         "size": 0,
         "title": "Server Inventory with License Information",
         "queryType": 1,
@@ -447,6 +371,13 @@
         "sortBy": []
       },
       "name": "serverDetails"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "> **⚠️ Exclusions:** This workbook only displays Windows Servers running on Arc-enabled machines. Non-Windows servers (Linux, etc.) and SQL Server instances without a configured license type are excluded from the results."
+      },
+      "name": "disclaimer"
     },
     {
       "type": 1,
