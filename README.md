@@ -48,6 +48,7 @@ This workbook provides real-time visibility into your Azure Arc-enabled infrastr
 2. **Import the workbook:**
    - Navigate to Azure Monitor > Workbooks in the Azure portal
    - Click "New" and select "Advanced Editor"
+   - Remove the existing content
    - Copy the contents of `workbooks/arc-sa-overview.json`
    - Paste into the Gallery Template editor
    - Click "Apply" and save the workbook
