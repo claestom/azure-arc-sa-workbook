@@ -34,3 +34,6 @@ config.local.*
 *.bak
 *.backup
 *~
+
+# Test workbooks
+workbooks/arc-sa-overview-test.json
