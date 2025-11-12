@@ -29,7 +29,6 @@ This workbook provides real-time visibility into your Azure Arc-enabled infrastr
   - **Subscription** selection (single or multiple)
   - **Resource Group** filtering with resource counts
   - **Server Type** filtering (Windows Server, SQL Server)
-  - **Version-specific** filtering (Windows Server versions, SQL Server versions)
 - Sortable by various attributes
 
 ## Prerequisites
