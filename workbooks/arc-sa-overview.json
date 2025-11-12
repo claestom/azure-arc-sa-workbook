@@ -382,7 +382,7 @@
     {
       "type": 1,
       "content": {
-        "json": "### Summary Statistics\r\n\r\nThis dashboard provides an overview of your Arc-enabled infrastructure licensing compliance:\r\n\r\n- **Software Assurance Enabled**: Servers with active Software Assurance\r\n- **Software Assurance Disabled**: Servers without Software Assurance\r\n\r\n> **Note**: Use the built-in table filter to focus on specific server types in the detailed view."
+        "json": "### Summary Statistics\r\n\r\nThis dashboard provides an overview of your Arc-enabled infrastructure licensing compliance:\r\n\r\n- **Software Assurance Enabled**: Servers with Software Assurance configuration enabled in Azure Portal\r\n- **Software Assurance Disabled**: Servers without Software Assurance configuration enabled in Azure Portal\r\n\r\n> **Note**: Use the built-in table filter to focus on specific server types in the detailed view."
       },
       "name": "footer"
     },
