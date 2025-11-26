@@ -34,6 +34,7 @@ config.local.*
 *.bak
 *.backup
 *~
+READMEbu.md
 
 # Test workbooks
 workbooks/arc-sa-overview-test.json

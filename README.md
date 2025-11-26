@@ -1,90 +1,81 @@
-# Azure Arc Software Assurance Dashboard
+# Azure Arc Software Assurance Workbook
 
-A comprehensive Azure Workbook for monitoring Software Assurance compliance across your hybrid infrastructure with Arc-enabled servers and SQL Server instances.
+## Purpose
 
-## Overview
+The purpose of this repository is to provide an Azure Workbook for monitoring Software Assurance compliance across your Azure Arc-enabled infrastructure. This workbook simplifies license management, enhances visibility into hybrid environments, and enables proactive compliance monitoring for both Windows Servers and SQL Server instances.
 
-This workbook provides real-time visibility into your Azure Arc-enabled infrastructure licensing status, helping you:
+## Features
 
-- Track Software Assurance compliance across Windows Servers
-- Identify potential licensing gaps
-- Generate compliance reports for hybrid infrastructure
+* **Centralized Software Assurance monitoring** for Azure Arc-enabled servers and SQL instances
+* **Real-time compliance tracking** with visual dashboards and metrics
+* **Filtering capabilities** by subscription, resource group, and server type
+* **Detailed server inventory** with licensing information and infrastructure details
+* **Built-in guidance** with links to official Microsoft documentation for enabling Software Assurance
+* **Multi-platform support** including Azure Local (HCI), SCVMM, VMware vSphere, AWS, GCP, and physical servers
 
 ## Screenshots
 
 ![Azure Arc Software Assurance Dashboard](screenshots/example1.png)
 ![Azure Arc Software Assurance Dashboard](screenshots/example2.png)
 
-*The dashboard provides a comprehensive view of your Arc-enabled infrastructure with licensing compliance metrics and detailed server inventory.*
+## Architecture Overview
 
-## Features
+The workbook queries Azure Resource Graph to collect licensing information from Arc-enabled resources across your hybrid infrastructure. The main components include:
 
-### 📊 Key Metrics Dashboard
-- **Software Assurance Enabled/Disabled** Windows & SQL servers count
-- **Coverage Percentages** - Real-time SA compliance rates for Windows and SQL Server
+* **Azure Resource Graph** - Data source for Arc resource information
+* **Azure Workbook** - Visualization and dashboard interface
+* **Arc-enabled Windows Servers** - Servers with license profile configuration
+* **Arc-enabled SQL Server instances** - SQL instances with license type configuration
+* **Azure Portal** - Centralized access point for monitoring
 
-### 📋 Detailed Server Inventory
-- Complete list of Arc-enabled servers and SQL instances
-- Multi-level filtering:
-  - **Subscription** selection (single or multiple)
-  - **Resource Group** filtering with resource counts
-  - **Server Type** filtering (Windows Server, SQL Server)
-- Sortable by various attributes
+This architecture provides a unified view across hybrid environments, enabling consistent license compliance monitoring and reporting.
 
 ## Prerequisites
 
-- Azure subscription with Arc-enabled servers
-- Azure Monitor Workbooks access
-- Appropriate RBAC permissions to view hybrid compute resources
+* An active Azure subscription with Arc-enabled servers and/or SQL instances
+* **Azure Arc-enabled Windows Servers** with license profiles configured
+* **Azure Arc-enabled SQL Server instances** with license types configured
+* **Reader permissions** on the subscriptions and resource groups containing Arc resources
+* Access to **Azure Workbooks** in the Azure Portal
 
-## Installation
+## Usage
 
-1. **Clone this repository:**
-   ```bash
-   git clone https://github.com/claestom/azure-arc-sa-workbook.git
-   ```
+### Step 1: Deploy the Workbook
 
-2. **Import the workbook:**
-   - Navigate to Azure Monitor > Workbooks in the Azure portal
-   - Click "New" and select "Advanced Editor"
-   - Remove the existing content
-   - Copy the contents of `workbooks/arc-sa-overview.json`
-   - Paste into the Gallery Template editor
-   - Click "Apply" and save the workbook
+* Download the workbook JSON file from this repository
+* In the Azure Portal, navigate to **Azure Workbooks**
+* Click **New** → **Advanced Editor**
+* Paste the JSON content from `arc-sa-overview.json`
+* Click **Done Editing** and **Save** the workbook
 
-3. **Configure parameters:**
-   - Select your subscription(s) from the dropdown
-   - Choose specific resource group(s) or select "All"
-   - Use server type filters to focus on Windows or SQL Server instances
-   - Apply version-specific filters for granular analysis
+### Step 2: Monitor Software Assurance Compliance
 
-## Azure Resource Graph Queries
+The workbook provides several views:
 
-For users who prefer to run individual queries directly in Azure Resource Graph, this repository also includes standalone KQL queries in the `arg/` folder:
+**Summary Tiles:**
+* Arc Servers - Software Assurance Enabled/Disabled counts
+* Arc SQL Servers - Software Assurance Enabled/Disabled counts  
+* Coverage percentage for both Windows Server and SQL Server
 
-- **`arcSAsummary.kql`** - Summary metrics for Software Assurance compliance
-- **`arcSAdetailed.kql`** - Detailed server inventory with licensing information
+**Server Inventory Table:**
+* Detailed list of all Arc-enabled servers and SQL instances
+* License compliance status with visual indicators
+* Server type, version, infrastructure kind, and location information
+* Built-in filtering capabilities for focused analysis
 
-These queries can be executed directly in:
-- [Azure Resource Graph Explorer](https://portal.azure.com/#view/HubsExtension/ArgQueryBlade) in the Azure portal
-- Azure CLI using `az graph query`
-- Azure PowerShell using `Search-AzGraph`
-- REST API calls to Azure Resource Graph
+### Step 3: Enable Software Assurance for Non-Compliant Resources
 
-## Contributing
+For servers showing as "Software Assurance Disabled":
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/enhancement`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/enhancement`)
-5. Create a Pull Request
+**For SQL Server instances:**
+* Configure the license type to "Paid" in the Azure Portal
 
-## License
+**For Windows Servers:**
+* Enable Software Assurance in the license profile settings
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Potential Use Cases
 
-## Disclaimer
-
-This workbook is provided as-is for monitoring purposes. Always consult with your licensing team and review Microsoft licensing terms for official compliance requirements.
-
----
+* **License Compliance Monitoring:** Track Software Assurance configuration across hybrid infrastructure
+* **Cost Optimization:** Identify servers eligible for Azure Hybrid Benefit through Software Assurance
+* **Audit & Reporting:** Generate compliance reports for license audits and governance
+* **Hybrid Cloud Visibility:** Gain insights across on-premises, multi-cloud, and Azure environments
